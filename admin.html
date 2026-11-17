@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f2347">
+<title>وَمض | WAMD — إدارة المحفظة</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<style>
+:root{--bg:#f3f4f8;--s:#fff;--t:#14213d;--m:#6a7186;--l:#e2e5ee;--navy:#0f2347;--gold:#c9a24b;--ok:#12805c;--bad:#c0332f}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(120% 60% at 50% 0,rgba(15,35,71,.12),transparent 60%),var(--bg);color:var(--t);font-family:"IBM Plex Sans Arabic",system-ui,sans-serif}
+button,input{font:inherit}button{cursor:pointer}.wrap{max-width:1180px;margin:auto;padding:22px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}.brand{display:flex;align-items:center;gap:12px}.mark{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--gold),#e8cd8a);display:grid;place-items:center;color:var(--navy);font-size:22px;font-weight:700;box-shadow:0 8px 22px #0f234722}.brand b{font-size:21px}.brand small{display:block;color:var(--m);font-size:12px}
+.panel{background:var(--s);border:1px solid var(--l);border-radius:18px;padding:18px;box-shadow:0 5px 18px #0f23470a}
+.login{max-width:440px;margin:9vh auto}.login h1{margin:0 0 8px;font-size:23px}.mut{color:var(--m);font-size:13px;line-height:1.8}
+label{display:block;margin:14px 0 6px;font-size:13px;font-weight:700}input{width:100%;padding:12px;border:1px solid var(--l);border-radius:12px;background:var(--bg);color:var(--t);outline:none}input:focus{border-color:var(--gold)}
+.btn{border:0;border-radius:12px;padding:12px 16px;background:linear-gradient(135deg,var(--navy),#27457f);color:#fff;font-weight:700}.btn.gold{background:linear-gradient(135deg,var(--gold),#e3c273);color:#14213d}.btn.out{background:transparent;border:1px solid var(--l);color:var(--t)}.btn.danger{background:#fff0ef;color:var(--bad);border:1px solid #f2c6c3}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:16px 0}.stat small{color:var(--m);font-size:12px}.stat strong{display:block;font-size:25px;margin-top:8px;direction:ltr;text-align:right}.stat .sub{font-size:11px;color:var(--m);margin-top:4px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tabs button{border:1px solid var(--l);background:var(--s);color:var(--m);border-radius:12px;padding:9px 14px}.tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+h2{font-size:18px;margin:0 0 14px}.search{max-width:360px}.table-wrap{overflow:auto;margin-top:12px}table{width:100%;border-collapse:collapse;min-width:680px}th,td{text-align:right;padding:12px 10px;border-bottom:1px solid var(--l);font-size:13px}th{color:var(--m);font-weight:500;background:#f8f9fc;white-space:nowrap}.ltr{direction:ltr;text-align:left;font-variant-numeric:tabular-nums}.status{display:inline-block;padding:4px 9px;border-radius:99px;background:#e9f5ef;color:#12805c;font-size:11px}.status.bad{background:#fff0ef;color:var(--bad)}.status.wait{background:#fff7e6;color:#956b17}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.mini{padding:7px 10px;border-radius:9px;font-size:11px}.empty{padding:28px;text-align:center;color:var(--m)}.foot{margin:20px 0;text-align:center;color:var(--m);font-size:11px}
+.modal{position:fixed;inset:0;background:#07132dcc;display:none;align-items:center;justify-content:center;padding:16px;z-index:10}.modal.on{display:flex}.modalbox{max-width:520px;width:100%;max-height:90vh;overflow:auto;background:var(--s);border-radius:20px;padding:20px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.wrap{padding:14px}.head{align-items:flex-start}}
+@media(max-width:420px){.grid{gap:8px}.stat strong{font-size:20px}.panel{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div class="brand"><div class="mark">W</div><div><b>وَمض <span style="color:var(--gold)">WAMD</span></b><small>إدارة المحفظة الرقمية</small></div></div>
+  </header>
+  <section id="login" class="panel login"><div id="authView"></div></section>
+  <main id="dashboard" style="display:none">
+    <div class="row" style="flex-wrap:wrap"><div><h1 style="margin:0;font-size:23px">نظرة عامة</h1><div class="mut">إدارة حسابات العملاء ومتابعة العمليات</div></div><div class="actions"><button class="btn out mini" id="refresh">تحديث البيانات</button><button class="btn out mini" id="logout">تسجيل الخروج</button></div></div>
+    <div class="grid" id="stats"></div>
+    <nav class="tabs">
+      <button class="on" data-tab="overview">نظرة عامة</button>
+      <button data-tab="users">المحافظ والعملاء</button>
+      <button data-tab="transactions">سجل العمليات</button>
+      <button data-tab="activity">سجل الإدارة</button>
+    </nav>
+    <section id="view"></section>
+  </main>
+</div>
+<div class="modal" id="modal"><div class="modalbox" id="modalContent"></div></div>
+<script>
+const $=s=>document.querySelector(s), money=n=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const KEY="itc1", ADMIN_STORE="wamd_admin_account_v1", LOG_KEY="wamd_admin_log";
+let DB={}, tab="overview";
+function read(){try{DB=JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){DB={}}}
+function write(){localStorage.setItem(KEY,JSON.stringify(DB))}
+function logs(){try{return JSON.parse(localStorage.getItem(LOG_KEY)||"[]")}catch(e){return []}}
+function log(action,phone){const a=logs();a.unshift({action,phone,time:Date.now()});localStorage.setItem(LOG_KEY,JSON.stringify(a.slice(0,100)))}
+function users(){return Object.entries(DB).filter(([p,u])=>u&&Array.isArray(u.acc)).map(([phone,u])=>({phone,...u}))}
+function allTx(){return users().flatMap(u=>(u.tx||[]).map(t=>({...t,phone:u.phone,name:u.name||"—"}))).sort((a,b)=>b.d-a.d)}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function account(){try{return JSON.parse(localStorage.getItem(ADMIN_STORE)||"null")}catch(e){return null}}
+function hex(bytes){return Array.from(bytes,b=>b.toString(16).padStart(2,"0")).join("")}
+async function passwordHash(password,salt){
+ if(!window.crypto?.subtle||!window.crypto?.getRandomValues)throw new Error("secure-context");
+ const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(password),"PBKDF2",false,["deriveBits"]);
+ const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt,iterations:210000,hash:"SHA-256"},key,256);
+ return hex(new Uint8Array(bits));
+}
+function equal(a,b){if(typeof a!=="string"||typeof b!=="string"||a.length!==b.length)return false;let x=0;for(let i=0;i<a.length;i++)x|=a.charCodeAt(i)^b.charCodeAt(i);return x===0}
+function authMessage(msg){const e=$("#authError");if(e)e.textContent=msg}
+function renderAuth(){
+ const a=account();
+ if(!a){
+  $("#authView").innerHTML=`<h1>إنشاء حساب المدير</h1><p class="mut">أنشئ حساب الدخول الخاص بإدارة وَمض. ستستخدم اسم المستخدم وكلمة المرور في كل مرة تفتح فيها لوحة الإدارة.</p>
+  <form id="setupForm" autocomplete="on"><label for="adminUser">اسم المستخدم</label><input id="adminUser" name="username" autocomplete="username" maxlength="40" placeholder="اسم المستخدم" required>
+  <label for="adminPass">كلمة المرور</label><input id="adminPass" name="new-password" type="password" autocomplete="new-password" minlength="10" placeholder="10 أحرف على الأقل" required>
+  <label for="adminPass2">تأكيد كلمة المرور</label><input id="adminPass2" type="password" autocomplete="new-password" minlength="10" placeholder="أعد كتابة كلمة المرور" required>
+  <p id="authError" class="mut" style="color:var(--bad)"></p><button class="btn gold" type="submit" style="width:100%">إنشاء حساب المدير</button></form>
+  <a href="index.html" style="display:block;text-align:center;margin-top:16px;color:var(--navy);text-decoration:none;font-size:13px">العودة إلى محفظة وَمض</a>`;
+  $("#setupForm").onsubmit=async e=>{
+   e.preventDefault();const username=$("#adminUser").value.trim(),pass=$("#adminPass").value,confirm=$("#adminPass2").value;
+   if(username.length<4)return authMessage("اسم المستخدم يجب ألا يقل عن 4 أحرف.");
+   if(pass.length<10)return authMessage("كلمة المرور يجب ألا تقل عن 10 أحرف.");
+   if(pass!==confirm)return authMessage("كلمتا المرور غير متطابقتين.");
+   if(account())return renderAuth();
+   try{const salt=crypto.getRandomValues(new Uint8Array(16));const hash=await passwordHash(pass,salt);localStorage.setItem(ADMIN_STORE,JSON.stringify({username:username.toLowerCase(),salt:hex(salt),hash,iterations:210000,createdAt:Date.now()}));sessionStorage.setItem("wamd_admin_auth","1");openDashboard()}
+   catch(err){authMessage("تعذر إنشاء الحساب. افتح الموقع عبر اتصال آمن HTTPS ثم أعد المحاولة.")}
+  };
+ }else{
+  $("#authView").innerHTML=`<h1>تسجيل دخول المدير</h1><p class="mut">أدخل بيانات حساب الإدارة للمتابعة.</p>
+  <form id="loginForm" autocomplete="on"><label for="adminUser">اسم المستخدم</label><input id="adminUser" name="username" autocomplete="username" required>
+  <label for="adminPass">كلمة المرور</label><input id="adminPass" name="current-password" type="password" autocomplete="current-password" required>
+  <p id="authError" class="mut" style="color:var(--bad)"></p><button class="btn gold" type="submit" style="width:100%">دخول لوحة الإدارة</button></form>
+  <a href="index.html" style="display:block;text-align:center;margin-top:16px;color:var(--navy);text-decoration:none;font-size:13px">العودة إلى محفظة وَمض</a>`;
+  $("#loginForm").onsubmit=async e=>{
+   e.preventDefault();const username=$("#adminUser").value.trim().toLowerCase(),pass=$("#adminPass").value,cfg=account();
+   if(!cfg||username!==cfg.username)return authMessage("بيانات الدخول غير صحيحة.");
+   try{const salt=Uint8Array.from(cfg.salt.match(/.{2}/g)||[],v=>parseInt(v,16));const hash=await passwordHash(pass,salt);if(!equal(hash,cfg.hash))return authMessage("بيانات الدخول غير صحيحة.");sessionStorage.setItem("wamd_admin_auth","1");openDashboard()}
+   catch(err){authMessage("تعذر التحقق من بيانات الدخول. افتح الموقع عبر اتصال آمن HTTPS.")}
+  };
+ }
+}
+function stats(){
+ const us=users(),tx=allTx(),total=us.reduce((s,u)=>s+(u.acc||[]).reduce((x,a)=>x+(+a.bal||0),0),0);
+ const pending=tx.filter(t=>t.status==="pending").length,stopped=us.filter(u=>u.suspended).length;
+ $("#stats").innerHTML=[
+  ["إجمالي المحافظ",us.length,"حسابات العملاء"],
+  ["إجمالي الأرصدة",money(total)+" ر.س","إجمالي الأرصدة المسجلة"],
+  ["عدد العمليات",tx.length,"السجلات المحفوظة"],
+  ["عمليات معلّقة",pending,`محافظ موقوفة: ${stopped}`]
+ ].map(([a,b,c])=>`<div class="panel stat"><small>${a}</small><strong>${b}</strong><div class="sub">${c}</div></div>`).join("");
+}
+function show(){
+ read();stats();
+ if(tab==="overview"){
+  const tx=allTx().slice(0,8);
+  $("#view").innerHTML=`<div class="panel"><h2>آخر العمليات المسجلة</h2>${tableTx(tx)}</div><div class="panel" style="margin-top:14px"><h2>ملاحظات تشغيلية</h2><p class="mut">• تعرض اللوحة البيانات المحفوظة على هذا المتصفح.</p><p class="mut">• إيقاف المحفظة يمنع الدخول من واجهة العميل على هذا الجهاز.</p><p class="mut">• لا تنفذ اللوحة تحويلات أو تسويات مالية فعلية.</p></div>`;
+ }else if(tab==="users"){
+  const q=( $("#userSearch")?.value||"").trim().toLowerCase();
+  const us=users().filter(u=>!q||u.phone.includes(q)||(u.name||"").toLowerCase().includes(q));
+  $("#view").innerHTML=`<div class="panel"><div class="row" style="flex-wrap:wrap"><h2>المحافظ والعملاء</h2><input class="search" id="userSearch" placeholder="بحث بالاسم أو رقم الجوال" value="${esc(q)}"></div><div class="table-wrap"><table><thead><tr><th>العميل</th><th>رقم الجوال</th><th>الرصيد الإجمالي</th><th>الحالة</th><th>العمليات</th><th>الإجراء</th></tr></thead><tbody>${us.map(u=>`<tr><td>${esc(u.name||"—")}</td><td class="ltr">${esc(u.phone)}</td><td class="ltr">${money((u.acc||[]).reduce((s,a)=>s+(+a.bal||0),0))} SAR</td><td><span class="status ${u.suspended?"bad":""}">${u.suspended?"موقوفة":"نشطة"}</span></td><td>${(u.tx||[]).length}</td><td><div class="actions"><button class="btn out mini" data-detail="${esc(u.phone)}">التفاصيل</button><button class="btn ${u.suspended?"gold":"danger"} mini" data-toggle="${esc(u.phone)}">${u.suspended?"إعادة التفعيل":"إيقاف"}</button></div></td></tr>`).join("")||`<tr><td colspan="6" class="empty">لا توجد محافظ بعد. أنشئ حساباً من تطبيق العميل أولاً.</td></tr>`}</tbody></table></div></div>`;
+  $("#userSearch").oninput=()=>{const v=$("#userSearch").value;show();const el=$("#userSearch");el.focus();el.setSelectionRange(v.length,v.length)};
+ }else if(tab==="transactions"){
+  const tx=allTx();$("#view").innerHTML=`<div class="panel"><div class="row" style="flex-wrap:wrap"><h2>سجل العمليات</h2><button class="btn out mini" id="export">تصدير CSV</button></div>${tableTx(tx)}</div>`;$("#export").onclick=exportCSV;
+ }else{
+  const a=logs();$("#view").innerHTML=`<div class="panel"><h2>سجل إجراءات الإدارة</h2><div class="table-wrap"><table><thead><tr><th>الإجراء</th><th>رقم الجوال</th><th>التاريخ</th></tr></thead><tbody>${a.map(x=>`<tr><td>${esc(x.action)}</td><td class="ltr">${esc(x.phone||"—")}</td><td>${new Date(x.time).toLocaleString("ar-SA")}</td></tr>`).join("")||`<tr><td colspan="3" class="empty">لا توجد إجراءات مسجلة.</td></tr>`}</tbody></table></div></div>`;
+ }
+}
+function tableTx(tx){return `<div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>العميل</th><th>البيان</th><th>المبلغ</th><th>الحالة</th><th>المرجع</th></tr></thead><tbody>${tx.map(t=>`<tr><td>${new Date(t.d).toLocaleString("ar-SA")}</td><td>${esc(t.name)}<div class="mut ltr">${esc(t.phone)}</div></td><td>${esc(t.title)}</td><td class="ltr">${t.amt>0?"+":"−"}${money(Math.abs(t.amt))} SAR</td><td><span class="status ${t.status==="pending"?"wait":""}">${t.status==="pending"?"قيد المعالجة":"مسجلة"}</span></td><td class="ltr">${esc(t.id)}</td></tr>`).join("")||`<tr><td colspan="6" class="empty">لا توجد عمليات مسجلة.</td></tr>`}</tbody></table></div>`}
+function detail(phone){const u=DB[phone];if(!u)return;const total=(u.acc||[]).reduce((s,a)=>s+(+a.bal||0),0);$("#modalContent").innerHTML=`<div class="row"><h2>تفاصيل المحفظة</h2><button class="btn out mini" id="closeModal">إغلاق</button></div><div class="panel"><b>${esc(u.name||"—")}</b><div class="mut ltr">${esc(phone)}</div><div class="mut" style="margin-top:8px">الحالة: ${u.suspended?"موقوفة":"نشطة"}</div><div style="margin-top:10px">إجمالي الرصيد: <b class="ltr">${money(total)} SAR</b></div></div><h2 style="margin-top:16px">الأرصدة</h2>${(u.acc||[]).map(a=>`<div class="panel" style="margin-top:8px"><div class="row"><span>${esc(a.n)}</span><b class="ltr">${money(a.bal)} SAR</b></div><div class="mut ltr">${esc(a.iban||"")}</div></div>`).join("")}<h2 style="margin-top:16px">آخر العمليات</h2>${tableTx((u.tx||[]).slice(0,10).map(t=>({...t,name:u.name,phone})))}`;$("#modal").classList.add("on");$("#closeModal").onclick=()=>$("#modal").classList.remove("on")}
+function exportCSV(){
+ const rows=[["date","customer","mobile","description","amount_SAR","status","reference"],...allTx().map(t=>[new Date(t.d).toISOString(),t.name,t.phone,t.title,t.amt,t.status||"recorded",t.id])];
+ const csv=rows.map(r=>r.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n");
+ const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="wamd-transactions.csv";a.click();URL.revokeObjectURL(url);
+}
+function openDashboard(){$("#login").style.display="none";$("#dashboard").style.display="block";show()}
+$("#logout").onclick=()=>{sessionStorage.removeItem("wamd_admin_auth");location.reload()};
+$("#refresh").onclick=show;
+document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("on",x===b));show()});
+document.addEventListener("click",e=>{
+ const d=e.target.closest("[data-detail]"),t=e.target.closest("[data-toggle]");
+ if(d){read();detail(d.dataset.detail)}
+ if(t){read();const phone=t.dataset.toggle,u=DB[phone];if(!u)return;u.suspended=!u.suspended;DB[phone]=u;write();log(u.suspended?"إيقاف المحفظة":"إعادة تفعيل المحفظة",phone);show()}
+});
+if(sessionStorage.getItem("wamd_admin_auth")==="1"&&account())openDashboard();else renderAuth();
+</script>
+</body></html>
